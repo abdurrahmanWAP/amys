@@ -1,0 +1,46 @@
+package com.miniproject.amys.handler;
+
+import com.miniproject.amys.dto.ErrorResDto;
+import com.miniproject.amys.exception.DataIntegrityException;
+import com.miniproject.amys.exception.DataVersionMismatchException;
+import com.miniproject.amys.exception.NotFoundException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.List;
+
+@RestControllerAdvice
+public class ErrorHandler {
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResDto<List<String>>> handleMethodArgumentNotValidException(
+            MethodArgumentNotValidException ex
+    ){
+        var errors = ex.getBindingResult().getAllErrors().stream()
+                .map((ObjectError oe) -> oe.getDefaultMessage())
+                .toList();
+        return new ResponseEntity<>(new ErrorResDto<>(errors), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ErrorResDto<String>> handleNotFoundException(NotFoundException ex){
+        var errors = ex.getMessage();
+        return new ResponseEntity<>(new ErrorResDto<>(errors), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DataIntegrityException.class)
+    public ResponseEntity<ErrorResDto<String>> handleDataIntegrityException(DataIntegrityException ex){
+        var errors = ex.getMessage();
+        return new ResponseEntity<>(new ErrorResDto<>(errors), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DataVersionMismatchException.class)
+    public ResponseEntity<ErrorResDto<String>> handleDataVersionMismatchException(DataVersionMismatchException ex) {
+        var errors = ex.getMessage();
+        return new ResponseEntity<>(new ErrorResDto<>(errors), HttpStatus.BAD_REQUEST);
+    }
+}

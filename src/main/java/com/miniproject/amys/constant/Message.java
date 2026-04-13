@@ -1,9 +1,9 @@
 package com.miniproject.amys.constant;
 
 public enum Message {
-    CREATE("Create Successfully"),
-    UPDATE("Update Successfully"),
-    DELETE("Delete Successfully");
+    CREATE("Created successfully"),
+    UPDATE("Updated successfully"),
+    DELETE("Deleted successfully");
 
     private String message;
 
